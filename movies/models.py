@@ -1,8 +1,9 @@
 from urllib.parse import parse_qs, urlparse
 
 from django.db import models
+from django.db.models import Q
 
-# Create your models here.
+from torrent_client.tasks import start_movie_download
 
 
 class Movie(models.Model):
@@ -16,6 +17,7 @@ class Movie(models.Model):
     UPLOADING = 5
     UPLOAD_COMPLETE = 6
     READY = 7
+    INVALID = 8
 
     STATUS_CHOICES = [
         (0, "Created"),
@@ -26,6 +28,7 @@ class Movie(models.Model):
         (5, "Uploading"),
         (6, "Upload Completed"),
         (7, "Ready for Watching"),
+        (8, "Invalid"),
     ]
 
     QUALITY_CHOICES = [
@@ -53,8 +56,15 @@ class Movie(models.Model):
     status = models.IntegerField(choices=STATUS_CHOICES, default=0)
     magnet_link = models.CharField(max_length=512)
 
+    def set_status(self, status):
+        self.status = status
+
     def start_download(self):
-        pass
+        if self.file_size <= 1500:
+            self.set_status(self.WAITING_DOWNLOAD)
+            start_movie_download(self).delay()
+        else:
+            self.set_status(self.INVALID)
 
     def start_upload(self):
         pass
@@ -62,17 +72,30 @@ class Movie(models.Model):
     def cleanup_downloads(self):
         pass
 
-    def get_info_hashs(self):
+    def get_info_hash(self):
         xts = parse_qs(urlparse(self.magnet_link).query)["xt"]
-        info_hashes = []
-        for xt in xts:
-            _, x = xt.split(":")
-            _, y = x.split(":")
-            info_hashes.append(y)
-        return info_hashes
+        _, x = xts[0].split(":")
+        _, info_hash = x.split(":")
+        return info_hash
 
     def generate_link(self):
         pass
+
+    def get_current_slug_size(self):
+        downloads = Movie.objects.filter(
+            Q(status=self.DOWNLOADING) | Q(status=self.DOWNLOAD_COMPLETE)
+        )
+        size = 0
+        for movie in downloads:
+            size += movie.file_size
+        return size
+
+    def get_deletable_movies(self):
+        upload_complete = Movie.objects.filter(status=self.UPLOAD_COMPLETE)
+        deletable = []
+        for movie in upload_complete:
+            deletable.append(movie.get_info_hash())
+        return deletable
 
     def __str__(self):
         return self.name + ":" + str(self.quality)
