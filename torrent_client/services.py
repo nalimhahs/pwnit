@@ -46,3 +46,19 @@ def check_if_torrent_complete(info_hash):
         if torrent.info.hash == info_hash:
             return True
     return False
+
+
+def get_main_file_path(hash):
+    VALID_FORMATS = ["mp4", "mkv", "avi"]
+    files = qb.torrents_files(hash=hash)
+    valid = []
+    for file in files:
+        if file["name"][-3:] in VALID_FORMATS:
+            valid.append(file)
+
+    largest = valid[0]
+    for video in valid:
+        if video["size"] > largest["size"]:
+            largest = video
+
+    return qb.app.preferences["save_path"] + largest["name"]
