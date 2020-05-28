@@ -1,7 +1,8 @@
 from config import celery_app
-from movies.models import Movie
 from .services import *
 from django.conf import settings
+
+from movies.models import Movie
 
 
 @celery_app.task()

@@ -54,6 +54,7 @@ telethon = "*"
 yarl = "*"
 cryptg = "*"
 torf = "*"
+aiohttp = "*"
 
 [requires]
 python_version = "3.8"

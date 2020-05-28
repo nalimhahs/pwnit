@@ -3,7 +3,7 @@ from urllib.parse import parse_qs, urlparse
 from django.db import models
 from django.db.models import Q
 
-from torrent_client.tasks import start_movie_download
+# from torrent_client.tasks import start_movie_download
 
 
 class Movie(models.Model):
@@ -62,7 +62,7 @@ class Movie(models.Model):
     def start_download(self):
         if self.file_size <= 1500:
             self.set_status(self.WAITING_DOWNLOAD)
-            start_movie_download.delay(self)
+            # start_movie_download.delay(self)
         else:
             self.set_status(self.INVALID)
 

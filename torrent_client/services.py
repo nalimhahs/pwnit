@@ -13,9 +13,9 @@ try:
 except qbittorrentapi.LoginFailed as e:
     print(e)
 
-# # retrieve and show all torrents
+# retrieve and show all torrents
 # for torrent in qb.torrents_info():
-#     print(f"{torrent.hash[-6:]}: {torrent.name} ({torrent.state})")
+#     print(torrent)
 
 # add torrent via magnet to download queue
 def download_from_magnet(magnet):
@@ -29,7 +29,7 @@ def delete_torrent(hashes):
 
 # get the progress of a particular torrent
 def get_progress(hashes):
-    qb.torrents_info(hashes=hashes)
+    return qb.torrents_info(hashes=hashes)
 
 
 # get all running torrents
