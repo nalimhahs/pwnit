@@ -1,7 +1,9 @@
 from urllib.parse import parse_qs, urlparse
+import requests
 
 from django.db import models
 from django.db.models import Q
+from django.conf import settings
 
 # from torrent_client.tasks import start_movie_download
 
@@ -79,7 +81,16 @@ class Movie(models.Model):
         return info_hash
 
     def generate_link(self):
-        pass
+        if self.status != self.READY:
+            return ""
+        try:
+            url = requests.get(
+                settings.STREAM_SERVER_URL + "/generate",
+                params={"id": self.tel_message_id},
+            )["url"]
+        except:
+            url = ""
+        return url
 
     @staticmethod
     def get_current_slug_size():
