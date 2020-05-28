@@ -1,0 +1,5 @@
+{
+    "python.linting.pylintEnabled": true,
+    "python.formatting.provider": "black",
+    "python.pythonPath": "/home/milan/.local/share/virtualenvs/pwnit-EjQPTA9w/bin/python"
+}
