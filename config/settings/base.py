@@ -301,3 +301,6 @@ REST_FRAMEWORK = {
 }
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+# Maximum storage the app can use to download content in MB
+MAX_SLUG_SIZE = 10000

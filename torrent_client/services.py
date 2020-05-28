@@ -33,8 +33,16 @@ def get_progress(hashes):
 
 
 # get all running torrents
-def get_all_torrents():
+def get_all_torrent_hashes():
     torrents = []
     for torrent in qb.torrents_info():
         torrents.append(torrent.hash)
     return torrents
+
+
+def check_if_torrent_complete(hash):
+    torrent_list_completed = qb.torrents.info.completed()
+    for torrent in torrent_list_completed:
+        if torrent.info.hash == hash:
+            return True
+    return False

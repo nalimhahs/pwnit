@@ -62,7 +62,7 @@ class Movie(models.Model):
     def start_download(self):
         if self.file_size <= 1500:
             self.set_status(self.WAITING_DOWNLOAD)
-            start_movie_download(self).delay()
+            start_movie_download.delay(self)
         else:
             self.set_status(self.INVALID)
 
@@ -81,21 +81,31 @@ class Movie(models.Model):
     def generate_link(self):
         pass
 
-    def get_current_slug_size(self):
+    @staticmethod
+    def get_current_slug_size():
         downloads = Movie.objects.filter(
-            Q(status=self.DOWNLOADING) | Q(status=self.DOWNLOAD_COMPLETE)
+            Q(status=Movie.DOWNLOADING) | Q(status=Movie.DOWNLOAD_COMPLETE)
         )
         size = 0
         for movie in downloads:
             size += movie.file_size
         return size
 
-    def get_deletable_movies(self):
-        upload_complete = Movie.objects.filter(status=self.UPLOAD_COMPLETE)
+    @staticmethod
+    def get_deletable_hashes():
+        upload_complete = Movie.objects.filter(status=Movie.UPLOAD_COMPLETE)
         deletable = []
         for movie in upload_complete:
-            deletable.append(movie.get_info_hash())
+            deletable.append({"movie": movie, "hash": movie.get_info_hash()})
         return deletable
+
+    @staticmethod
+    def get_downloading_hashes():
+        downloading = Movie.objects.filter(status=Movie.DOWNLOADING)
+        d = []
+        for movie in downloading:
+            d.append({"movie": movie, "hash": movie.get_info_hash()})
+        return d
 
     def __str__(self):
         return self.name + ":" + str(self.quality)
