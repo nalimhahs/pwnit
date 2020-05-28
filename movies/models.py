@@ -1,3 +1,5 @@
+from urllib.parse import parse_qs, urlparse
+
 from django.db import models
 
 # Create your models here.
@@ -59,6 +61,15 @@ class Movie(models.Model):
 
     def cleanup_downloads(self):
         pass
+
+    def get_info_hashs(self):
+        xts = parse_qs(urlparse(self.magnet_link).query)["xt"]
+        info_hashes = []
+        for xt in xts:
+            _, x = xt.split(":")
+            _, y = x.split(":")
+            info_hashes.append(y)
+        return info_hashes
 
     def generate_link(self):
         pass

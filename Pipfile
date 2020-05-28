@@ -53,6 +53,7 @@ qbittorrent-api = "*"
 telethon = "*"
 yarl = "*"
 cryptg = "*"
+torf = "*"
 
 [requires]
 python_version = "3.8"
