@@ -11,6 +11,10 @@ qbittorrent-api
 yarl
 telethon
 cryptg
+aiohttp
+beautifulsoup4
+html5lib
+lxml
 
 # Django
 # ------------------------------------------------------------------------------
