@@ -23,7 +23,8 @@ def list_all_movies_view(request):
 
 def view_single_movie_view(request, pk):
     movie = Movie.objects.get(pk=pk)
-    return render(request, "movies/view_movie.html", {"movie": movie})
+    url = movie.generate_link()
+    return render(request, "movies/view_movie.html", {"movie": movie, "url": url})
 
 
 def search_movies_view(request):
