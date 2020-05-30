@@ -39,9 +39,11 @@ def auto_update_download_status():
 def auto_delete_completed():
     deletable = Movie.get_deletable_hashes()
     running = get_all_torrent_hashes()
+    print(running)
+    print(deletable)
     deleted = []
     for mov in deletable:
-        if mov in running:
+        if mov["hash"] in running:
             delete_torrent(mov["hash"])
             mov["movie"].set_status(Movie.READY)
             deleted.append(mov["movie"])

@@ -1,7 +1,7 @@
 from config import celery_app
 from movies.models import Movie
 from django.conf import settings
-
+import json
 import requests
 
 
@@ -13,10 +13,9 @@ def upload_movie(movie_pk):
         settings.STREAM_SERVER_URL + "/upload",
         data={"file_path": movie.file_location, "movie_id": movie.pk},
     )
-    print(response)
     if response.status_code in (200, 201, 202):
         movie.set_status(Movie.UPLOAD_COMPLETE)
-        movie.tel_message_id = response.content["message_id"]
+        movie.tel_message_id = json.loads(response.text)["message_id"]
         movie.set_status(Movie.READY)
     return movie
 

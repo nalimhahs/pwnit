@@ -54,7 +54,7 @@ class Movie(models.Model):
     length = models.CharField(max_length=20, blank=True, null=True)
 
     # Telegram Message id
-    tel_message_id = models.IntegerField(null=True, blank=True, editable=False)
+    tel_message_id = models.IntegerField(null=True, blank=True, editable=True)
     status = models.IntegerField(choices=STATUS_CHOICES, default=0)
     magnet_link = models.CharField(max_length=512)
 
@@ -106,7 +106,7 @@ class Movie(models.Model):
 
     @staticmethod
     def get_deletable_hashes():
-        upload_complete = Movie.objects.filter(status=Movie.UPLOAD_COMPLETE)
+        upload_complete = Movie.objects.filter(status=Movie.READY)
         deletable = []
         for movie in upload_complete:
             deletable.append({"movie": movie, "hash": movie.get_info_hash()})

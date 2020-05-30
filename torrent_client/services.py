@@ -36,10 +36,10 @@ def get_progress(hashes):
 def get_all_torrent_hashes():
     torrents = []
     info = qb.torrents_info()
-    if info:
+    if not info:
         return torrents
     for torrent in info:
-        torrents.append(torrent.hash)
+        torrents.append(torrent["hash"])
     return torrents
 
 

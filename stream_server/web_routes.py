@@ -20,10 +20,10 @@ import logging
 from telethon.tl.custom import Message
 from aiohttp import web
 
-from .util import unpack_id, get_file_name, get_requester_ip
+from .util import unpack_id, get_file_name, get_requester_ip, pack_id
 from .config import request_limit, public_url
 from .telegram import client, transfer
-from .util import pack_id, get_file_name
+import requests
 
 log = logging.getLogger(__name__)
 routes = web.RouteTableDef()
@@ -54,6 +54,10 @@ async def handle_upload(req: web.Request) -> web.Response:
     message = await client.send_file("me", data["file_path"], caption=data["movie_id"])
     response = {"movie_id": data["movie_id"], "message_id": message.id}
     return web.json_response(response)
+
+
+def upload_callback(response):
+    requests.post("localhost:8000/movies/upload", data=response)
 
 
 def allow_request(ip: str) -> None:
