@@ -9,8 +9,8 @@ def refine(s):  # for getting links below 1.5gb
     return float(tag[0]) < 1.5
 
 
-async def fetch_data(url):
-    site = await requests.get(url)
+def fetch_data(url):
+    site = requests.get(url)
     site_cont = BeautifulSoup(site.content, "html5lib")
 
     data = {}  # storing data
@@ -21,27 +21,36 @@ async def fetch_data(url):
     runtime = site_cont.find("span", attrs={"title": "Runtime"}).next_sibling
     infos = site_cont.find("div", attrs={"id": "movie-info"})
     name = infos.h1.text
-    imbd_url = infos.find("a", attrs={"title": "IMDb Rating"})["href"]
+    imdb_url = infos.find("a", attrs={"title": "IMDb Rating"})["href"]
     contents = site_cont.findAll("div", attrs={"class": "modal-torrent"})
-
+    links = []
     # extracting sizes and quality
     for content in contents:
         quality = {}
         temp = content.findAll("p", attrs={"class": "quality-size"})
         if refine(temp[1].text):
-            quality["size"] = temp[1].text
-            quality["quality"] = content.find(
-                "div", attrs={"class": "modal-quality"}
-            ).span.text
-            quality["links"] = content.find("a", attrs={"class": "magnet-download"})[
+            quality["size"], unit = temp[1].text.split(" ")
+            if unit in ("GB", "gb"):
+                quality["size"] = float(quality["size"]) * 1000
+            else:
+                quality["size"] = float(quality["size"])
+            quality["quality"] = int(
+                content.find("div", attrs={"class": "modal-quality"}).span.text.split(
+                    "p"
+                )[0]
+            )
+            quality["link"] = content.find("a", attrs={"class": "magnet-download"})[
                 "href"
             ]
-            data[quality["quality"] + "-" + temp[1].text] = quality
+            links.append(quality)
 
+    data["quality"] = links[0]["quality"]
+    data["file_size"] = int(links[0]["size"])
+    data["magnet_link"] = links[0]["link"]
     data["name"] = name
-    data["imbd_url"] = imbd_url
+    data["imdb_url"] = imdb_url
     data["length"] = runtime
-    data["contents"] = description
+    data["description"] = description
     data["thumbnail"] = img_url
 
     return data

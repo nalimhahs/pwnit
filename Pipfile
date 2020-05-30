@@ -56,6 +56,8 @@ cryptg = "*"
 torf = "*"
 aiohttp = "*"
 beautifulsoup4 = "*"
+html5lib = "*"
+lxml = "*"
 
 [requires]
 python_version = "3.8"

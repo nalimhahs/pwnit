@@ -10,7 +10,7 @@ def add_movie_view(request):
     if request.method == "POST":
         form = AddMovieURLForm(request.POST)
         if form.is_valid():
-            add_movie.delay(form.url)
+            add_movie.delay(url=form.cleaned_data["url"])
     else:
         form = AddMovieURLForm()
     return render(request, "movies/add_movie.html", {"form": form})

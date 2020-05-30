@@ -5,14 +5,14 @@ from torrent_client.tasks import start_movie_download
 
 
 @celery_app.task()
-def add_movie(self, url):
+def add_movie(url):
     # run script to get data
     data = fetch_data(url)
     if data:
-        movie = Movie.objects.create(data)
+        movie = Movie.objects.create(**data)
         if movie.file_size <= 1500:
             movie.set_status(movie.WAITING_DOWNLOAD)
-            start_movie_download.delay(movie)
+            start_movie_download.delay(movie.pk)
         else:
             movie.set_status(movie.INVALID)
     else:

@@ -49,7 +49,7 @@ class Movie(models.Model):
     restricted = models.BooleanField(default=False)
     imdb_url = models.URLField(blank=True, null=True)
     file_location = models.CharField(max_length=1024, blank=True, null=True)
-    length = models.TimeField(blank=True, null=True)
+    length = models.CharField(max_length=20, blank=True, null=True)
 
     # Telegram Message id
     tel_message_id = models.IntegerField(null=True, blank=True, editable=False)

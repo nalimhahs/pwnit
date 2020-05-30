@@ -6,7 +6,8 @@ import requests
 
 
 @celery_app.task()
-def upload_movie(self, movie: Movie):
+def upload_movie(movie_pk):
+    movie = Movie.objects.get(pk=movie_pk)
     response = requests.post(
         settings.STREAM_SERVER_URL + "/upload",
         data={"file_path": movie.file_location, "movie_id": movie.pk},
