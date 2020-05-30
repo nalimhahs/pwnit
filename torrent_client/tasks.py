@@ -8,18 +8,16 @@ from tel_storage.tasks import upload_movie
 
 @celery_app.task(bind=True)
 def start_movie_download(self, movie_pk):
-    movie = Movie.objects.get(pk=movie_pk)
-    delete_old = auto_delete_completed
-    delete_old.wait(timeout=None, interval=0.5)
 
+    movie = Movie.objects.get(pk=movie_pk)
     try:
         if Movie.get_current_slug_size() + movie.file_size > settings.MAX_SLUG_SIZE:
             raise Exception("Storage full! Will retry in 5 mins.")
     except Exception:
         self.retry(cowntdown=300)
 
-    download_from_magnet(movie.magnet_link)
     movie.set_status(Movie.DOWNLOADING)
+    download_from_magnet(movie.magnet_link)
 
 
 # Periodic task: every 5-10 secs?
@@ -30,9 +28,10 @@ def auto_update_download_status():
     for mov in downloading:
         if check_if_torrent_complete(mov["hash"]):
             mov["movie"].set_status(Movie.DOWNLOAD_COMPLETE)
+            mov["movie"].update_file_location(get_main_file_path(mov["hash"]))
             upload_movie(mov["movie"].pk)
             modified.append(mov["movie"])
-    return modified
+    return {"modified": modified, "downloading": downloading}
 
 
 # Periodic task: every 30 secs?

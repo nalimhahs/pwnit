@@ -5,6 +5,8 @@ from django.db import models
 from django.db.models import Q
 from django.conf import settings
 
+from torrent_client.services import get_torrent_progress
+
 
 class Movie(models.Model):
 
@@ -58,6 +60,7 @@ class Movie(models.Model):
 
     def set_status(self, status):
         self.status = status
+        self.save()
 
     # def start_download(self):
     #     if self.file_size <= 1500:
@@ -69,14 +72,15 @@ class Movie(models.Model):
     # def start_upload(self):
     #     pass
 
-    # def cleanup_downloads(self):
-    #     pass
+    def update_file_location(self, loc):
+        self.file_location = loc
+        self.save()
 
     def get_info_hash(self):
         xts = parse_qs(urlparse(self.magnet_link).query)["xt"]
-        _, x = xts[0].split(":")
-        _, info_hash = x.split(":")
-        return info_hash
+        _, _, info_hash = xts[0].split(":")
+        # _, info_hash = x.split(":")
+        return info_hash.lower()
 
     def generate_link(self):
         if self.status != self.READY:
@@ -113,7 +117,10 @@ class Movie(models.Model):
         downloading = Movie.objects.filter(status=Movie.DOWNLOADING)
         d = []
         for movie in downloading:
-            d.append({"movie": movie, "hash": movie.get_info_hash()})
+            hash = movie.get_info_hash()
+            d.append(
+                {"movie": movie, "hash": hash, "progress": get_torrent_progress(hash)}
+            )
         return d
 
     def __str__(self):

@@ -50,8 +50,8 @@ async def generate_url(req: web.Request) -> web.Response:
 
 @routes.post(r"/upload")
 async def handle_upload(req: web.Request) -> web.Response:
-    data = await req.json()
-    message = client.send_file("me", data["file_path"], caption=data["movie_id"])
+    data = await req.post()
+    message = await client.send_file("me", data["file_path"], caption=data["movie_id"])
     response = {"movie_id": data["movie_id"], "message_id": message.id}
     return web.json_response(response)
 

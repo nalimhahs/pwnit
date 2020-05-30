@@ -47,9 +47,15 @@ def get_all_torrent_hashes():
 def check_if_torrent_complete(info_hash):
     torrent_list_completed = qb.torrents.info.completed()
     for torrent in torrent_list_completed:
-        if torrent.info.hash == info_hash:
+        if torrent["hash"] == info_hash:
             return True
     return False
+
+
+def get_torrent_progress(info_hash):
+    progress = qb.torrents_files(hash=info_hash)[0]["progress"]
+    print(progress)
+    return progress
 
 
 # get file path of video

@@ -308,3 +308,4 @@ REST_FRAMEWORK = {
 
 # Maximum storage the app can use to download content in MB
 MAX_SLUG_SIZE = 10000
+STREAM_SERVER_URL = "http://localhost:8060"

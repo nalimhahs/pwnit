@@ -25,4 +25,8 @@ app.conf.beat_schedule = {
         "task": "torrent_client.tasks.auto_delete_completed",
         "schedule": 30,
     },
+    "auto_upload_completed": {
+        "task": "tel_storage.tasks.auto_upload_movie",
+        "schedule": 30,
+    },
 }
