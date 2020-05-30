@@ -55,6 +55,7 @@ yarl = "*"
 cryptg = "*"
 torf = "*"
 aiohttp = "*"
+beautifulsoup4 = "*"
 
 [requires]
 python_version = "3.8"

@@ -40,6 +40,7 @@ def get_all_torrent_hashes():
     return torrents
 
 
+# check torrent progress
 def check_if_torrent_complete(info_hash):
     torrent_list_completed = qb.torrents.info.completed()
     for torrent in torrent_list_completed:
@@ -48,8 +49,9 @@ def check_if_torrent_complete(info_hash):
     return False
 
 
+# get file path of video
 def get_main_file_path(hash):
-    VALID_FORMATS = ["mp4", "mkv", "avi"]
+    VALID_FORMATS = ["mp4", "mkv", "avi", "mov"]
     files = qb.torrents_files(hash=hash)
     valid = []
     for file in files:
