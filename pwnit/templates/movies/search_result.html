@@ -1,0 +1,3 @@
+{% for movie in movies %}
+<a href={% url "view_movie" movie.pk %}>{{movie.name}}</a>
+{% endfor %}
