@@ -5,8 +5,6 @@ from django.db import models
 from django.db.models import Q
 from django.conf import settings
 
-# from torrent_client.tasks import start_movie_download
-
 
 class Movie(models.Model):
 
@@ -61,18 +59,18 @@ class Movie(models.Model):
     def set_status(self, status):
         self.status = status
 
-    def start_download(self):
-        if self.file_size <= 1500:
-            self.set_status(self.WAITING_DOWNLOAD)
-            # start_movie_download.delay(self)
-        else:
-            self.set_status(self.INVALID)
+    # def start_download(self):
+    #     if self.file_size <= 1500:
+    #         self.set_status(self.WAITING_DOWNLOAD)
+    #         # start_movie_download.delay(self)
+    #     else:
+    #         self.set_status(self.INVALID)
 
-    def start_upload(self):
-        pass
+    # def start_upload(self):
+    #     pass
 
-    def cleanup_downloads(self):
-        pass
+    # def cleanup_downloads(self):
+    #     pass
 
     def get_info_hash(self):
         xts = parse_qs(urlparse(self.magnet_link).query)["xt"]

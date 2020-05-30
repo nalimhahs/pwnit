@@ -8,7 +8,7 @@ from movies.models import Movie
 @celery_app.task()
 def start_movie_download(self, movie: Movie):
 
-    delete_old = auto_delete_completed()
+    delete_old = auto_delete_completed
     delete_old.wait(timeout=None, interval=0.5)
 
     try:
