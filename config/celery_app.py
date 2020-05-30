@@ -15,3 +15,14 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
+
+app.conf.beat_schedule = {
+    "auto_update_download_status": {
+        "task": "torrent_client.tasks.auto_update_download_status",
+        "schedule": 10,
+    },
+    "auto_delete_completed": {
+        "task": "torrent_client.tasks.auto_delete_completed",
+        "schedule": 30,
+    },
+}
