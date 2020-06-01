@@ -342,3 +342,5 @@ pwnit/media/
 .env
 .envs/*
 !.envs/.local/
+tgfilestream.session
+server.db.config
