@@ -9,10 +9,8 @@ class add_movie_api_view(APIView):
     permission_classes = []
 
     def post(self, request):
-        print(request.data)
-        add_movie.delay(data=request.data)
         try:
-
+            add_movie.delay(data=request.data)
             return Response({"message": "success"})
         except Exception as err:
             print(err)
