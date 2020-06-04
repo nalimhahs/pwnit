@@ -1,19 +1,20 @@
 from django.shortcuts import render, redirect
-from .forms import AddMovieURLForm
-from scrapper.tasks import add_movie
+from .forms import AddMovieURLForm, MovieSearchForm
+from scrapper.services import search_handler
 from .models import Movie
 from django.db.models import Q
 from django.http import HttpResponseBadRequest
 
 
-def add_movie_view(request):
+def search_online_movies_view(request):
+    data = []
     if request.method == "POST":
-        form = AddMovieURLForm(request.POST)
+        form = MovieSearchForm(request.POST)
         if form.is_valid():
-            add_movie.delay(url=form.cleaned_data["url"])
+            data = search_handler(form.cleaned_data["query"])
     else:
-        form = AddMovieURLForm()
-    return render(request, "movies/add_movie.html", {"form": form})
+        form = MovieSearchForm()
+    return render(request, "movies/add_movie.html", {"form": form, "data": data})
 
 
 def list_all_movies_view(request):
@@ -27,7 +28,7 @@ def view_single_movie_view(request, pk):
     return render(request, "movies/view_movie.html", {"movie": movie, "url": url})
 
 
-def search_movies_view(request):
+def search_local_movies_view(request):
     query = request.query_params.get("q", None)
     if not query:
         return HttpResponseBadRequest()

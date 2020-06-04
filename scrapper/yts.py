@@ -1,5 +1,7 @@
+import json
 import requests
 from bs4 import BeautifulSoup
+from .utils import generate_magnet, generate_hash
 
 
 def refine(s):  # for getting links below 1.5gb
@@ -52,5 +54,55 @@ def fetch_data(url):
     data["length"] = runtime
     data["description"] = description
     data["thumbnail"] = img_url
+    data["provider"] = "yts"
+    data["provider_id"] = url.split("/")[-1]
+    data["magnet_hash"] = generate_hash(data["magnet_link"])
 
+    return data
+
+
+BASE_URL = "https://yts.mx/api/v2"
+
+
+def movie_search_api(query):
+    ENDPOINT = "/list_movies.json"
+    result = requests.get(BASE_URL + ENDPOINT, params={"query_term": query})
+    data = []
+    for res in json.loads(result.text)["data"]["movies"]:
+        mov = {
+            "name": res["title_long"],
+            "id": res["id"],
+            # "quality": res["quality"],
+            "provider": "yts",
+        }
+        data.append(mov)
+    return data
+
+
+def fetch_data_api(dat):
+    id = dat["id"]
+    ENDPOINT = "/movie_details.json"
+    result = requests.get(BASE_URL + ENDPOINT, params={"movie_id": id})
+    pre = json.loads(result.text)["data"]["movie"]
+    data = {}
+    for torrent in pre["torrents"]:
+        if refine(torrent["size"]):
+            data["quality"] = int(torrent["quality"].split("p")[0])
+            size, unit = torrent["size"].split(" ")
+            if unit in ("GB", "gb"):
+                data["file_size"] = float(size) * 1000
+            else:
+                data["file_size"] = float(size)
+            data["magnet_hash"] = torrent["hash"].lower()
+            data["magnet_link"] = generate_magnet(
+                data["magnet_hash"], pre["title_long"]
+            )
+            break
+    data["name"] = pre["title_long"]
+    data["imdb_url"] = "https://www.imdb.com/title/" + pre["imdb_code"] + "/"
+    data["length"] = str(pre["runtime"])
+    data["description"] = pre["description_full"]
+    data["thumbnail"] = pre["medium_cover_image"]
+    data["provider"] = "yts"
+    data["provider_id"] = str(pre["id"])
     return data

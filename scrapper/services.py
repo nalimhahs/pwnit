@@ -1,8 +1,14 @@
-from .utils import get_url_handler
+from .utils import get_provider_handler
+from .yts import movie_search_api
 
 
-def fetch_data(url):
-    handler = get_url_handler(url)
+def fetch_data(data):
+    handler = get_provider_handler(data["provider"])
     if handler:
-        return handler(url)
+        return handler(data)
     return None
+
+
+def search_handler(query):
+    results = movie_search_api(query)
+    return results

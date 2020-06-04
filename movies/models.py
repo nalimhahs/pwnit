@@ -57,6 +57,9 @@ class Movie(models.Model):
     tel_message_id = models.IntegerField(null=True, blank=True, editable=True)
     status = models.IntegerField(choices=STATUS_CHOICES, default=0)
     magnet_link = models.CharField(max_length=512)
+    magnet_hash = models.CharField(max_length=100, unique=True)
+    provider = models.CharField(max_length=20)
+    provider_id = models.CharField(max_length=50)
 
     def set_status(self, status):
         self.status = status
