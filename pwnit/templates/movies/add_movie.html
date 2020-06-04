@@ -13,35 +13,17 @@
   {% endfor%}
 </p>
 
-<!-- <script src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script> -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
-<!-- <script src="{% static 'js/project.js' %}"></script> -->
+
 <script>
     function addToLibrary(data) {
-    // const axios = require("axios").default;
-  if (confirm("Are you sure?")) {
+    if (confirm("Are you sure?")) {
         data.csrfmiddlewaretoken = '{{ csrf_token }}'
         console.log(data)
         let request = new XMLHttpRequest();
         request.open("POST", '/movies/api/add', true);
         request.setRequestHeader('Content-Type', 'application/json');
         request.send(JSON.stringify(data))
-    // fetch('/movies/api/add', {
-    //     method: 'POST',
-    //     body: JSON.stringify(data)
-    // })
-    // axios
-    //   .post("/movies/api/add", {
-    //     firstName: "Fred",
-    //     lastName: "Flintstone",
-    //   })
-    //   .then(function (response) {
-    //     console.log(response);
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
-  }
+    }
 }
 
 </script>
