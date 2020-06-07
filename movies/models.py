@@ -92,7 +92,7 @@ class Movie(models.Model):
             url = requests.get(
                 settings.STREAM_SERVER_URL + "/generate",
                 params={"id": self.tel_message_id},
-            )["url"]
+            ).json()["url"]
         except:
             url = ""
         return url
