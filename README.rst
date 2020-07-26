@@ -3,6 +3,14 @@ pwnit
 
 Personal Netflix!
 
+Uses the qbittorrent web api, to handle and manage torrents, which are then uploaded to your telegram account from which we stream the video.
+
+Why go through this much pain? To download via torrent and then upload to telegram and then stream from there? Streaming a torrent is highly unreliable. And telegram offers unlimited storage blocks of 2 gigs with cdns all around the world. This is just a small personal project trying to link the two somehow (Partially successful as of now). 
+
+Issues: Right now the upload speeds of my test server is painfully slow, resulting in the main upload celery worker to timeout or hog the main worker thread for too long. Development paused till I find something faster.
+
+Note: Use at your own risk! Using torrent is illegal in some countries. Excessive usage of the telegram api can result in getting your account banned or rate limited. The app does try to protect against some limits but is nowhere near complete. I am not responsible for any issues that may arise from using this app.
+
 .. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
      :target: https://github.com/pydanny/cookiecutter-django/
      :alt: Built with Cookiecutter Django
