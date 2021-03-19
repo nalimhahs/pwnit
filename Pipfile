@@ -26,7 +26,7 @@ sentry-sdk = "==0.14.4"
 django-storages = {extras = ["boto3"],version = "==1.9.1"}
 django-anymail = {extras = ["mailgun"],version = "==7.1.0"}
 Pillow = "==7.1.2"
-Django = "==3.0.5"
+Django = "==3.1.6"
 Collectfast = "==2.1.0"
 ipdb = "==0.13.2"
 sphinx = "==3.0.3"
